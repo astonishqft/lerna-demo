@@ -2,7 +2,7 @@
   "name": "pkg2",
   "version": "0.0.2",
   "description": "> TODO: description",
-  "author": "qi.futao <qi.futao@iwhalecloud.com>",
+  "author": "qi.futao",
   "homepage": "",
   "license": "ISC",
   "main": "lib/pkg2.js",
@@ -23,5 +23,6 @@
     "fs-extra": "^10.0.0",
     "ora": "^6.0.1",
     "pkg1": "^0.0.2"
-  }
+  },
+  "gitHead": "b2a49dbfbd5102fe8a0b580a0bc8d291a27ffe14"
 }

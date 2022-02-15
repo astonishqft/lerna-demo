@@ -176,7 +176,26 @@ $ git remote add origin git@github.com:astonishqft/lerna-demo.git
 $ git push -u origin main
 ```
 
-## yarn workspaces 与 lerna
+### 删除某个包
+
+将pkg1里面的glob包删除：
+
+```bash
+$ lerna exec --scope=pkg1 npm uninstall glob
+```
+### 抽离公共的包
+
+上面可以看到，pkg1 和 pkg2 都依赖了 fs-extra 这个包，而各自 package 下面的 node_modules 都进行了一次安装，因此我们可以通过 --hoist 来抽取重复的依赖到最外层的 node_modules 目录下，同时最外层的 package.josn 的依赖信息也不会进行更新。
+
+```bash
+$ lerna bootstrap --hoist
+```
+
+### 最佳实践
+
+前面我们已经介绍了 `lerna` 的相关概念和基本用法，目前最常见的解决方案是基于 `lerna` 和 `yarn workspace` 的 `monorepo` 工作流。由于 `yarn` 和 `lerna` 在功能上有较多的重叠，我们采用 `yarn` 官方推荐的做法，用 `yarn` 来处理依赖问题，用 `lerna` 来处理发布问题。
+
+### yarn workspaces 与 lerna
 
 `yarn workspaces` 是 `yarn` 提供的 `monorepo` 的依赖管理机制，用于在代码仓库的根目录下管理多个 `package` 依赖，与 `lerna` 不同的是，`yarn workspace` 只会在根目录下安装一个 `node_modules`，而 `lerna` 会进到每个 `package` 中执行 `yarn/npm install`，因此会在每个 `package` 下生成一个 `node_modules`。
 
