@@ -167,6 +167,15 @@ $ lerna add pkg1 --scope pkg2
 lerna ERR! ENOCOMMIT No commits in this repository. Please commit something before using version.
 ```
 
+提交代码并关联到git仓库：
+
+```bash
+$ git add .
+$ git commit -m 'init'
+$ git remote add origin git@github.com:astonishqft/lerna-demo.git
+$ git push -u origin main
+```
+
 ## yarn workspaces 与 lerna
 
 `yarn workspaces` 是 `yarn` 提供的 `monorepo` 的依赖管理机制，用于在代码仓库的根目录下管理多个 `package` 依赖，与 `lerna` 不同的是，`yarn workspace` 只会在根目录下安装一个 `node_modules`，而 `lerna` 会进到每个 `package` 中执行 `yarn/npm install`，因此会在每个 `package` 下生成一个 `node_modules`。
