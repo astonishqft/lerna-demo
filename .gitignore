@@ -4,11 +4,7 @@ node_modules
 .DS_Store
 lerna-debug.log
 yarn-error.log
-_book
 .idea
 temp
-website/build
-website/package.json
-packages/**/package-lock.json
 coverage
 .history/
