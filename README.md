@@ -362,3 +362,4 @@ package.json 中增加相关配置项：
 
 接下来就可以使用 `yarn commit` 来代替 `git commit` 进行代码提交了。
 
+![image](https://user-images.githubusercontent.com/15138753/154808442-93a67399-d759-4cec-a8a7-d17081575f87.png)
