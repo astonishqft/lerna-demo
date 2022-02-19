@@ -2,7 +2,7 @@
 
 ## multirepo VS monorepo
 
-在介绍我们今天的主角 `lerna` 之前，首先了解下什么是 `multirepo` ？什么是 `monorepo` ？
+在介绍我们今天的主角 [lerna](https://www.npmjs.com/package/lerna) 之前，首先了解下什么是 `multirepo` ？什么是 `monorepo` ？
 
 `multirepo` 指的是将模块分为多个仓库，`monorepo` 指的是将多个模块放在一个仓库中。
 
@@ -279,4 +279,82 @@ package.json:
 
 - **commitizen** 
 
-支持生成标准化的 commit message 
+[commitizen](https://www.npmjs.com/package/commitizen) 的作用主要是为了生成标准化的 `commit message`，符合 [Angular规范](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#-git-commit-guidelines)。
+
+一个标准化的 `commit message` 应该包含三个部分：`Header`、`Body` 和 `Footer`，其中的 `Header` 是必须的，`Body` 和 `Footer` 可以选填。
+
+```
+<type>(<scope>): <subject>
+// 空一行
+<body>
+// 空一行
+<footer>
+```
+`Header` 部分由三个字段组成：`type`（必需）、`scope`（可选）、`subject`（必需）
+
+**Type**
+
+type 必须是下面的其中之一：
+
+- feat: 增加新功能
+- fix: 修复 bug
+- docs: 只改动了文档相关的内容
+- style: 不影响代码含义的改动，例如去掉空格、改变缩进、增删分号
+- refactor: 代码重构时使用，既不是新增功能也不是代码的bud修复
+- perf: 提高性能的修改
+- test: 添加或修改测试代码
+- chore: 杂项，其他不需要修改源代码或不需要修改测试代码的修改
+
+**scope**
+
+用于说明本次提交的影响范围。`scope` 依据项目而定，例如在业务项目中可以依据菜单或者功能模块划分，如果是组件库开发，则可以依据组件划分。
+
+**subject**
+
+主题包含对更改的简洁描述：
+
+注意三点：
+
+1. 使用祈使语气，现在时，比如使用 "change" 而不是 "changed" 或者 ”changes“
+2. 第一个字母不要大写
+3. 末尾不要以.结尾
+
+**Body**
+
+主要包含对主题的进一步描述，同样的，应该使用祈使语气，包含本次修改的动机并将其与之前的行为进行对比。
+
+**Footer**
+
+包含此次提交有关重大更改的信息，引用此次提交关闭的issue地址，如果代码的提交是不兼容变更或关闭缺陷，则Footer必需，否则可以省略。
+
+使用方法：
+
+安装 `commitizen`，如果需要在项目中使用 `commitizen` 生成符合 `AngularJS` 规范的提交说明，还需要安装 `cz-conventional-changelog`适配器：
+
+```bash
+$ yarn -W add commitizen cz-conventional-changelog -D
+```
+
+package.json 中增加相关配置项：
+
+```json
+{
+  "name": "root",
+  "private": true,
+  "scripts": {
+    "commit": "git-cz"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-lerna-changelog"
+    }
+  },
+  "devDependencies": {
+    "commitizen": "^3.1.1",
+    "cz-lerna-changelog": "^2.0.2",
+    "lerna": "^3.15.0"
+  }
+}
+```
+
+接下来就可以使用 `yarn commit` 来代替 `git commit` 进行代码提交了。
