@@ -303,7 +303,10 @@ type 必须是下面的其中之一：
 - refactor: 代码重构时使用，既不是新增功能也不是代码的bud修复
 - perf: 提高性能的修改
 - test: 添加或修改测试代码
+- build: 构建工具或者外部依赖包的修改，比如更新依赖包的版本
+- ci: 持续集成的配置文件或者脚本的修改
 - chore: 杂项，其他不需要修改源代码或不需要修改测试代码的修改
+- revert: 撤销某次提交
 
 **scope**
 
@@ -346,7 +349,7 @@ package.json 中增加相关配置项：
   },
   "config": {
     "commitizen": {
-      "path": "./node_modules/cz-lerna-changelog"
+      "path": "cz-conventional-changelog"
     }
   },
   "devDependencies": {
@@ -358,3 +361,4 @@ package.json 中增加相关配置项：
 ```
 
 接下来就可以使用 `yarn commit` 来代替 `git commit` 进行代码提交了。
+
