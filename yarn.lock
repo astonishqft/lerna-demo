@@ -38,12 +38,17 @@
     resolve-global "1.0.0"
     yargs "^17.0.0"
 
-"@commitlint/config-conventional@^16.2.1":
+"@commitlint/config-angular-type-enum@^16.2.1":
   version "16.2.1"
-  resolved "https://registry.npmmirror.com/@commitlint/config-conventional/-/config-conventional-16.2.1.tgz#2cf47b505fb259777c063538c8498d8fd9b47779"
-  integrity sha512-cP9gArx7gnaj4IqmtCIcHdRjTYdRUi6lmGE+lOzGGjGe45qGOS8nyQQNvkNy2Ey2VqoSWuXXkD8zCUh6EHf1Ww==
+  resolved "https://registry.npmmirror.com/@commitlint/config-angular-type-enum/-/config-angular-type-enum-16.2.1.tgz#275f27d677105d20471145a5954f8abbbd5ae3c8"
+  integrity sha512-RvYyBKXswXt/rg3y9T966a8bWWhwlfPIdmrJ7jmnGSHOlVYQUKOeVOTd9KWfEN0I+YrJdgB1piH1xoLBo/HQXw==
+
+"@commitlint/config-angular@^16.2.1":
+  version "16.2.1"
+  resolved "https://registry.npmmirror.com/@commitlint/config-angular/-/config-angular-16.2.1.tgz#c439a6da70d2cfc70de1268c7a1caaa1b5763eeb"
+  integrity sha512-lKk/Qo+8+QQnNEFT6dy42r4KRa5EkL0IE5x35V0QD56Eyiszp3F98jyVgP4vlHztNlEvt1POWN3CBiaJciBAIw==
   dependencies:
-    conventional-changelog-conventionalcommits "^4.3.1"
+    "@commitlint/config-angular-type-enum" "^16.2.1"
 
 "@commitlint/config-validator@^16.2.1":
   version "16.2.1"
@@ -1662,15 +1667,6 @@ conventional-changelog-angular@^5.0.11, conventional-changelog-angular@^5.0.12:
   integrity sha512-i/gipMxs7s8L/QeuavPF2hLnJgH6pEZAttySB6aiQLWcX3puWDL3ACVmvBhJGxnAy52Qc15ua26BufY6KpmrVA==
   dependencies:
     compare-func "^2.0.0"
-    q "^1.5.1"
-
-conventional-changelog-conventionalcommits@^4.3.1:
-  version "4.6.3"
-  resolved "https://registry.npmmirror.com/conventional-changelog-conventionalcommits/-/conventional-changelog-conventionalcommits-4.6.3.tgz#0765490f56424b46f6cb4db9135902d6e5a36dc2"
-  integrity sha512-LTTQV4fwOM4oLPad317V/QNQ1FY4Hju5qeBIM1uTHbrnCE+Eg4CdRZ3gO2pUeR+tzWdp80M2j3qFFEDWVqOV4g==
-  dependencies:
-    compare-func "^2.0.0"
-    lodash "^4.17.15"
     q "^1.5.1"
 
 conventional-changelog-core@^4.2.2:
