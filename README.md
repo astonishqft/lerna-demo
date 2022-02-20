@@ -277,7 +277,7 @@ package.json:
 
 代码编写完毕后接下来就涉及到代码的提交，为了规范代码提交格式，方便自动生成 changelog，这里需要借助一下几个工具。
 
-- **commitizen** 
+#### commitizen && cz-conventional-changelog
 
 [commitizen](https://www.npmjs.com/package/commitizen) 的作用主要是为了生成标准化的 `commit message`，符合 [Angular规范](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#-git-commit-guidelines)。
 
@@ -294,7 +294,7 @@ package.json:
 
 **Type**
 
-type 必须是下面的其中之一：
+`type` 必须是下面的其中之一：
 
 - feat: 增加新功能
 - fix: 修复 bug
@@ -332,18 +332,21 @@ type 必须是下面的其中之一：
 
 使用方法：
 
-安装 `commitizen`，如果需要在项目中使用 `commitizen` 生成符合 `AngularJS` 规范的提交说明，还需要安装 `cz-conventional-changelog`适配器：
+安装 `commitizen`，如果需要在项目中使用 `commitizen` 生成符合 `AngularJS` 规范的提交说明，还需要安装 `cz-conventional-changelog` 适配器：
 
 ```bash
 $ yarn -W add commitizen cz-conventional-changelog -D
 ```
 
-package.json 中增加相关配置项：
+`package.json` 中增加一条 script: `commit: "git-cz"`，并且在 `config` 字段中指定 `cz-conventional-changelog` 路径：
 
 ```json
 {
   "name": "root",
   "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "commit": "git-cz"
   },
@@ -353,9 +356,9 @@ package.json 中增加相关配置项：
     }
   },
   "devDependencies": {
-    "commitizen": "^3.1.1",
-    "cz-lerna-changelog": "^2.0.2",
-    "lerna": "^3.15.0"
+    "commitizen": "^4.2.4",
+    "cz-conventional-changelog": "^3.3.0",
+    "lerna": "^4.0.0"
   }
 }
 ```
@@ -363,3 +366,68 @@ package.json 中增加相关配置项：
 接下来就可以使用 `yarn commit` 来代替 `git commit` 进行代码提交了。
 
 ![image](https://user-images.githubusercontent.com/15138753/154808442-93a67399-d759-4cec-a8a7-d17081575f87.png)
+
+
+#### commitlint && husky
+
+前面我们提到，通过 `commitizen` && `z-conventional-changelog` 可以规范我们的 `commit message`，但是同时也存在一个问题，如果用户不通过 `yarn commit` 来提交代码，而是直接通过 `git commit` 命令来提交代码，就能绕开 `commit message` 检查，这是我们不希望看到的。
+
+因此接下来我们使用 `commitlint` 结合 `husky` 来对我们的提交行为进行约束。
+
+安装 `commitlint` 和 `husky`：
+
+```bash
+$ yarn -W add @commitlint/cli @commitlint/config-conventional husky -D
+```
+
+在工程根目录下增加 `commitlint.config.js` 配置文件，指定 `commitlint` 的校验配置文件：
+
+**commitlint.config.js**:
+
+```js
+module.exports = { 
+	extends: ['@commitlint/config-conventional'] 
+}
+```
+
+在 `package.json` 配置文件中增加 `husky` 配置项：
+
+```json
+"husky": { 
+  "hooks": { 
+    "commit-msg": "commitlint -E HUSKY_GIT_PARAMS" 
+  }
+},
+```
+
+现在的 `package.json`:
+
+```json
+{
+  "name": "root",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "commit": "git-cz"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "husky": { 
+ 		"hooks": { 
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS" 
+    }
+  },
+  "devDependencies": {
+    "commitizen": "^4.2.4",
+    "cz-conventional-changelog": "^3.3.0",
+    "lerna": "^4.0.0"
+  }
+}
+```
+
+在通过 git 提交代码的时候就会触发 husky 配置的 commit-msg 钩子，从而调用 commitlint 进行校验，只有提交信息符合提交规范才会允许代码提交，从而避免用户通过git commit直接提交代码，约束用户必须通过 yarn commit 进行代码提交。
