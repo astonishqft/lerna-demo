@@ -432,3 +432,47 @@ npx --no-install commitlint --edit "$1"
 
 ![image](https://user-images.githubusercontent.com/15138753/154849774-0627270a-86d9-4938-8782-bf5eb71a36c8.png)
 
+### eslint 配置
+
+配置 `eslint` 对代码进行统一的规范校验，配合 `lint-staged` 可以对已经提交的代码进行校验。
+
+安装 `eslint` 和 `lint-stage`:
+
+```bash
+$ yarn -W add eslint lint-staged @typescript-eslint/parser @typescript-eslint/eslint-plugin -D
+```
+
+增加 `.eslintrc` 配置文件:
+
+```
+{
+  "extends": [
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parser": "typescript-eslint-parser",
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "no-template-curly-in-string": "off"
+  }
+}
+```
+
+`lint-staged staged` 是 `Git` 里的概念，表示暂存区，`lint-staged` 表示只检查暂存区中的文件。
+
+`package.json` 中增加如下配置：
+
+```json
+"lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "git add"
+    ]
+}
+```
+
+husky中增加pre-commit校验：
+
+```bash
+$ npx husky add .husky/pre-commit "nint-staged"
+```
