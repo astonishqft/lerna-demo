@@ -423,8 +423,11 @@ module.exports = {
     }
   },
   "devDependencies": {
+    "@commitlint/cli": "^16.2.1",
+    "@commitlint/config-conventional": "^16.2.1",
     "commitizen": "^4.2.4",
     "cz-conventional-changelog": "^3.3.0",
+    "husky": "^7.0.4",
     "lerna": "^4.0.0"
   }
 }
