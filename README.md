@@ -372,7 +372,7 @@ $ yarn -W add commitizen cz-conventional-changelog -D
 
 前面我们提到，通过 `commitizen` && `z-conventional-changelog` 可以规范我们的 `commit message`，但是同时也存在一个问题，如果用户不通过 `yarn commit` 来提交代码，而是直接通过 `git commit` 命令来提交代码，就能绕开 `commit message` 检查，这是我们不希望看到的。
 
-因此接下来我们使用 `commitlint` 结合 `husky` 来对我们的提交行为进行约束。
+因此接下来我们使用 `commitlint` 结合 `husky` 来对我们的提交行为进行约束。在 `git commit` 提交之前使用 `git` 钩子来验证信息。提交不符合规则的信息将会被阻止提交。
 
 安装 `commitlint` 和 `husky`：
 

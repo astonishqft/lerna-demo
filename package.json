@@ -12,6 +12,21 @@
       "path": "cz-conventional-changelog"
     }
   },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
+    "rules": {
+      "body-empty": [
+        2,
+        "never"
+      ],
+      "footer-empty": [
+        2,
+        "never"
+      ]
+    }
+  },
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
