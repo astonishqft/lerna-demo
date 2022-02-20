@@ -514,7 +514,9 @@ $ npx husky add .husky/pre-commit "npx --no-install lint-staged"
 
 - 提交上述修改，并打一个 tag
 
-使用 lerna publish 来发布我们的包。
+- 推送到 git 仓库
+
+使用 lerna publish 来发布我们的包，只要我们按规范提交后，在 `lerna version` 的过程中会便会自动生成当前这个版本的 CHANGELOG。为了方便，不用每次输入参数，可以配置在 `lerna.json` 中，并且有的文件的变更我们可能不希望版本的更新，比如 md 文档，可以在 `ignoreChanges` 配置项中进行忽略。
 
 在 `lerna.json` 增加如下配置：
 
@@ -530,5 +532,3 @@ $ npx husky add .husky/pre-commit "npx --no-install lint-staged"
   ]
 }
 ```
-
-推送到 git 仓库
