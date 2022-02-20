@@ -430,3 +430,5 @@ npx --no-install commitlint --edit "$1"
 
 这样，当我们在执行 `git commit -m 'xxx'` 的时候，如果提交的 `commit message` 不符合规范就会报如下的错误，只有提交信息符合提交规范才会允许代码提交。
 
+![image](https://user-images.githubusercontent.com/15138753/154849774-0627270a-86d9-4938-8782-bf5eb71a36c8.png)
+
