@@ -4,5 +4,13 @@
   ],
   "useWorkspaces": true,
   "npmClient": "yarn",
+  "command": {
+    "version": {
+      "conventionalCommits": true
+    }
+  },
+  "ignoreChanges": [
+    "**/*.md"
+  ],
   "version": "0.0.2"
 }

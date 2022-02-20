@@ -442,20 +442,37 @@ npx --no-install commitlint --edit "$1"
 $ yarn -W add eslint lint-staged @typescript-eslint/parser @typescript-eslint/eslint-plugin -D
 ```
 
-增加 `.eslintrc` 配置文件:
+增加 `.eslintrc.js` 配置文件:
 
 ```
-{
-  "extends": [
-    "plugin:@typescript-eslint/recommended"
-  ],
-  "parser": "typescript-eslint-parser",
-  "plugins": ["@typescript-eslint"],
-  "rules": {
-      "@typescript-eslint/explicit-function-return-type": "off",
-      "no-template-curly-in-string": "off"
+module.exports = {
+  'parser': '@typescript-eslint/parser',
+  'plugins': ['@typescript-eslint'],
+  'rules': {
+    'no-var': 'error',// 不能使用var声明变量
+    'no-extra-semi': 'error',
+    '@typescript-eslint/indent': ['error', 2],
+    'import/extensions': 'off',
+    'linebreak-style': [0, 'error', 'windows'],
+    'indent': ['error', 2, { SwitchCase: 1 }], // error类型，缩进2个空格
+    'space-before-function-paren': 0, // 在函数左括号的前面是否有空格
+    'eol-last': 0, // 不检测新文件末尾是否有空行
+    'semi': ['error', 'always'], // 在语句后面加分号
+    'quotes': ['error', 'single'],// 字符串使用单双引号,double,single
+    'no-console': ['error', { allow: ['log', 'warn'] }],// 允许使用console.log()
+    'arrow-parens': 0,
+    'no-new': 0,//允许使用 new 关键字
+    'comma-dangle': [2, 'never'], // 数组和对象键值对最后一个逗号， never参数：不能带末尾的逗号, always参数：必须带末尾的逗号，always-multiline多行模式必须带逗号，单行模式不能带逗号
+    'no-undef': 0
+  },
+  'parserOptions': {
+    'ecmaVersion': 6,
+    'sourceType': 'module',
+    'ecmaFeatures': {
+      'modules': true
+    }
   }
-}
+};
 ```
 
 `lint-staged staged` 是 `Git` 里的概念，表示暂存区，`lint-staged` 表示只检查暂存区中的文件。
@@ -471,8 +488,47 @@ $ yarn -W add eslint lint-staged @typescript-eslint/parser @typescript-eslint/es
 }
 ```
 
-husky中增加pre-commit校验：
+`husky` 中增加 `pre-commit` 校验：
 
 ```bash
-$ npx husky add .husky/pre-commit "nint-staged"
+$ npx husky add .husky/pre-commit "npx --no-install lint-staged"
 ```
+
+### 自动生成提交日志
+
+上面这些操作结束之后，就可以方便的对版本进行管理，比如生成 changelog 或者 发布到 npm 等。
+
+#### lerna puplish
+
+- lerna publish 的时候会做一下操作：
+
+- 找出从上一个版本发布以来有过变更的 package
+
+- 提示开发者确定要发布的版本号
+
+- 将所有更新过的的 package 中的package.json的version字段更新
+
+- 将依赖更新过的 package 的 包中的依赖版本号更新
+
+- 更新 lerna.json 中的 version 字段
+
+- 提交上述修改，并打一个 tag
+
+使用 lerna publish 来发布我们的包。
+
+在 `lerna.json` 增加如下配置：
+
+```json
+{
+  "command": {
+    "version": {
+      "conventionalCommits": true
+    }
+  },
+  "ignoreChanges": [
+    "**/*.md"
+  ]
+}
+```
+
+推送到 git 仓库
