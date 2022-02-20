@@ -384,13 +384,14 @@ $ yarn -W add @commitlint/cli @commitlint/config-conventional husky -D
 
 **commitlint.config.js**:
 
+已经废弃的配置：
 ```js
 module.exports = { 
 	extends: ['@commitlint/config-conventional'] 
 }
 ```
 
-在 `package.json` 配置文件中增加 `husky` 配置项：
+需要注意的是，如果安装的 `husky` 的版本是 `7.x` 的，以往直接在 `package.json` 中 `hooks` 字段增加的配置项已经被废弃了，具体可以参考[这里](https://cloud.tencent.com/developer/article/1876208)
 
 ```json
 "husky": { 
@@ -400,37 +401,32 @@ module.exports = {
 },
 ```
 
-现在的 `package.json`:
+下面在 `husky 7.x` 版本下进行 `commit-msg` 的配置。
+
+1. 执行 `npm husky install`
+
+或者如果想在安装后自动启动 husky，在 package.json 的scripts中增加一条script命令：
 
 ```json
-{
-  "name": "root",
-  "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
-  "scripts": {
-    "commit": "git-cz"
-  },
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
-    }
-  },
-  "husky": { 
- 		"hooks": { 
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS" 
-    }
-  },
-  "devDependencies": {
-    "@commitlint/cli": "^16.2.1",
-    "@commitlint/config-conventional": "^16.2.1",
-    "commitizen": "^4.2.4",
-    "cz-conventional-changelog": "^3.3.0",
-    "husky": "^7.0.4",
-    "lerna": "^4.0.0"
-  }
-}
+"scripts": {
+  "prepare": "husky install"
+},
 ```
 
-在通过 git 提交代码的时候就会触发 husky 配置的 commit-msg 钩子，从而调用 commitlint 进行校验，只有提交信息符合提交规范才会允许代码提交，从而避免用户通过git commit直接提交代码，约束用户必须通过 yarn commit 进行代码提交。
+`prepare` 是 `NPM` 操作生命周期中的一环，在执行 `install` 的时候会按生命周期顺序执行相应钩子：`preinstall -> install -> postinstall -> prepublish -> preprepare -> prepare -> postprepare`
+
+执行完毕后就会在根目录下创建一个 `.husky` 目录。
+
+2. 通过 `husky add <file> [cmd]` 指令来添加一条 `hook`
+
+执行 `npx husky add .husky/commit-msg 'npx --no-install commitlint --edit "$1"'` 会在 `.husky` 下生成一个 `commit-msg` 的 `shell` 文件：
+
+```bash
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+npx --no-install commitlint --edit "$1"
+```
+
+这样，当我们在执行 `git commit -m 'xxx'` 的时候，如果提交的 `commit message` 不符合规范就会报如下的错误，只有提交信息符合提交规范才会允许代码提交。
+
