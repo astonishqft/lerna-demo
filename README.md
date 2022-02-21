@@ -1,4 +1,4 @@
-# lerna 管理你的应用
+# lerna最佳实践
 
 ## multirepo VS monorepo
 
@@ -196,6 +196,8 @@ $ lerna exec --scope=pkg1 npm uninstall glob
 $ lerna bootstrap --hoist
 ```
 
+但是这种方式会有一个问题，不同版本号只会保留使用最多的版本，这种配置不太好，当项目中有些功能需要依赖老版本时，就会出现问题，因此这种方式不推荐使用。
+
 ## 最佳实践
 
 前面我们已经介绍了 `lerna` 的相关概念和基本用法，目前最常见的解决方案是基于 `lerna` 和 `yarn workspace` 的 `monorepo` 工作流。
@@ -206,7 +208,7 @@ $ lerna bootstrap --hoist
 
 ### yarn workspaces 与 lerna
 
-`yarn workspaces` 是 `yarn` 提供的 `monorepo` 的依赖管理机制，用于在代码仓库的根目录下管理多个 `package` 依赖，与 `lerna` 不同的是，`yarn workspaces` 会将所有的依赖尽量安装到根目录的 `node_modules` 中，只有在各个 `package` 依赖了不同版本的同一个依赖或者存在自己的特有依赖时才会独自安装依赖，而 `lerna` 会进到每个 `package` 中执行 `yarn/npm install`，因此会在每个 `package` 下生成一个 `node_modules`。
+`yarn workspaces` 是 `yarn` 提供的 `monorepo` 的依赖管理机制，用于在代码仓库的根目录下管理多个 `package` 依赖，与 `lerna` 不同的是，`yarn workspaces` 可以解决前面说的当不同的 `package` 依赖不同的版本号问题，`yarn workspaces` 会检查每个子项目里面依赖及其版本，如果版本不一致都会安装到各自 `package` 的 `node_modules` 中，只有依赖版本号一致的时候才会提升到顶层，而 `lerna` 会进到每个 `package` 中执行 `yarn/npm install`，因此会在每个 `package` 下生成一个 `node_modules`。
 
 `yarn workspaces` 首先在工程的根目录下的 `package.json` 中增加 `"private": true` 和 `"workspaces”: [ "packages/*"]` 配置项。`"private": true` 可以确保根目录不会被发布出去，`"workspaces”: [ "packages/*"]` 声明了 `workspaces` 中所包含的项目路径。
 
@@ -263,7 +265,7 @@ package.json:
 
 - 给指定的某个 package 安装依赖
 
-  通过 `yarn workspace pkgA add pkgB` 可以将 `pkgB` 作为依赖安装到 `pkgA` 中，需要注意的是，如果是 packages 之间的相互安装，安装的时候可以指定到具体的版本号，否则安装的时候回去npm上搜索，但是因为某个包还没有发包出去，导致安装失败。
+  通过 `yarn workspace pkgA add pkgB` 可以将 `pkgB` 作为依赖安装到 `pkgA` 中，需要注意的是，如果是 packages 之间的相互安装，安装的时候可以指定到具体的版本号，否则安装的时候会去npm上搜索，但是因为某个包还没有发包出去，导致安装失败。
 
 删除包的时候只需要把上述 `add` 换成 `remove` 即可。
 
@@ -271,11 +273,11 @@ package.json:
 
 通过运行 `yarn workspace <workspace_name> <command>` 命令运行某个执行 `package` 下的某个 `script` 命令。
 
-比如执行 `pkgA` 下的 `build` 命令，可以运行 `yarn workspace pkgA run build`。如果想运行所以 `package` 下的 `build` 命令，可以运行 `yarn workspaces run build`。
+比如执行 `pkgA` 下的 `build` 命令，可以运行 `yarn workspace pkgA run build`。如果想运行 `package` 下的 `build` 命令，可以运行 `yarn workspaces run build`。
 
 ### 代码提交
 
-代码编写完毕后接下来就涉及到代码的提交，为了规范代码提交格式，方便自动生成 changelog，这里需要借助一下几个工具。
+代码编写完毕后接下来就涉及到代码的提交，为了规范代码提交格式，方便自动生成 changelog，这里需要借助以下几个工具。
 
 #### commitizen && cz-conventional-changelog
 
@@ -496,7 +498,7 @@ $ npx husky add .husky/pre-commit "npx --no-install lint-staged"
 
 ### 版本发布
 
-上面这些操作结束之后，就可以方便的对版本进行管理，比如生成 `changelog` 或者 发布到 `npm` 等。
+通过上面的方式，严格 `commit message` 的提交规范，就可以方便的通过 `lerna` 完成生成 `changelog`、打 `git tag`、 更新 `package.json` 的 `version` 版本号、发布到 `npm` 等操作。
 
 #### lerna puplish
 
@@ -516,7 +518,9 @@ $ npx husky add .husky/pre-commit "npx --no-install lint-staged"
 
 - 推送到 `git` 仓库
 
-使用 lerna publish 来发布我们的包，只要我们按规范提交后，在 `lerna version` 的过程中会便会自动生成当前这个版本的 CHANGELOG。为了方便，不用每次输入参数，可以配置在 `lerna.json` 中，并且有的文件的变更我们可能不希望版本的更新，比如 md 文档，可以在 `ignoreChanges` 配置项中进行忽略。
+`changelog` 的生成可以通过 `lerna version --conventional-commits` 自动生成，关于 `--conventional-commits` 参数，`lerna` 是这么描述的：
+
+> Use conventional-changelog to determine version bump and generate CHANGELOG.
 
 在 `lerna.json` 增加如下配置：
 
@@ -527,8 +531,30 @@ $ npx husky add .husky/pre-commit "npx --no-install lint-staged"
       "conventionalCommits": true
     }
   },
-  "ignoreChanges": [
-    "**/*.md"
-  ]
 }
 ```
+
+`lerna version` 会检测从上一个版本发布以来的变动，但有一些文件的提交，我们不希望触发版本的变动，譬如 `.md` 文件的修改，并没有实际引起 `package` 逻辑的变化，不应该触发版本的变更。可以通过 `ignoreChanges` 配置排除。
+
+```json
+{
+  "ignoreChanges": [
+    "**/*.md"
+  ],
+}
+```
+
+配置好之后，通过 `lerna publish` 完成changelog生成、版本号的修改和npm发包等操作了。
+
+## 总结
+
+以上就是一个完整的基于 `lerna + yarn workspace` 的 `monorepo` 的实践流程，里面包含了依赖包的管理、完善的工作流、统一的代码风格、一键发布机制等，当然还有一些不够完善的地方需要自己补充，比如单元测试等，有需要的可以基于我的例子进行补充完善。
+
+本示例[github地址](https://github.com/astonishqft/lerna-demo)。
+
+## 参考链接：
+
+- [erna 使用指南](https://www.jianshu.com/p/db3ee301af47)
+- [lerna+yarn workspace+monorepo项目的最佳实践](https://blog.csdn.net/i10630226/article/details/99702447)
+- [Lerna+Yarn workspace管理多npm](https://juejin.cn/post/6960575369288089631)
+- [Yarn Workspace使用指南](https://zhuanlan.zhihu.com/p/381794854)
