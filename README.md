@@ -500,7 +500,7 @@ $ npx husky add .husky/pre-commit "npx --no-install lint-staged"
 
 #### lerna puplish
 
-- lerna publish 的时候会做一下操作：
+lerna publish 的时候会做以下操作：
 
 - 找出从上一个版本发布以来有过变更的 package
 
